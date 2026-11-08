@@ -21,7 +21,7 @@ services:
       - key: DIRECT_URL
         sync: false
       - key: SUPABASE_URL
-        sync: false
+        value: https://hbaxufkdfufcetsyghny.supabase.co
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: SUPABASE_BUCKET
