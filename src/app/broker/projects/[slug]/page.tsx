@@ -26,7 +26,7 @@ export default async function ProjectPage({ params, searchParams }: { params: Pr
   const minPrice = avail.length ? Math.min(...avail.map((x) => x.price)) : p.priceFrom;
 
   const ad = [
-    `${p.name} من إزدان`,
+    `${p.name} من ازدان`,
     [p.type, p.district, p.city].filter(Boolean).join(" – "),
     minPrice ? `الأسعار تبدأ من ${num(minPrice)} ريال` : null,
     p.highlights ? p.highlights.split("\n").filter(Boolean).map((h) => `• ${h.trim()}`).join("\n") : p.description,

@@ -9,7 +9,7 @@ export function AppShell({ items, user, role, children }: { items: NavItem[]; us
   return (
     <div className="shell">
       <aside className="side">
-        <Link href="/" className="side-logo" aria-label="إزدان — الرئيسية">
+        <Link href="/" className="side-logo" aria-label="ازدان — الرئيسية">
           <Logo height={40} />
           <span>{role}</span>
         </Link>
@@ -26,7 +26,7 @@ export function AppShell({ items, user, role, children }: { items: NavItem[]; us
         </div>
       </aside>
       <header className="topbar">
-        <Link href="/" aria-label="إزدان"><Logo height={28} /></Link>
+        <Link href="/" aria-label="ازدان"><Logo height={28} /></Link>
         <span className="xs">{role}</span>
         <form action={logout} style={{ marginInlineStart: "auto" }}>
           <button className="btn btn-o btn-sm" type="submit">خروج</button>

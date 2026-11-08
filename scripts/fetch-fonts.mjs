@@ -1,12 +1,10 @@
-// ينزّل خطوط هوية إزدان من مجلد الهوية على Google Drive إلى public/fonts.
-// الخطوط مرخّصة تجاريًا لإزدان، لذلك لا تُحفظ في المستودع العام.
+// ينزّل خط هوية ازدان الموحّد (HT Rakik) من مجلد الهوية على Google Drive إلى public/fonts.
+// الخطوط مرخّصة تجاريًا لازدان، لذلك لا تُحفظ في المستودع العام.
 import { mkdir, writeFile, access } from "node:fs/promises";
 
 const FONTS = {
-  "Doran-VF.ttf": "1HtDnm8YuxBxlHFQBNAK4tuoBgL0z9wZJ",
   "HTRakik-Regular.otf": "1OJ3PYJrF1uynbDKLmSkNPEhdI2JMrY_Q",
   "HTRakik-SemiBold.otf": "1syc6N639EFscL9bBqYRGUfJBUDWOb8qu",
-  "29LTZaridDisplayVF.ttf": "13zhlvu66nc3afj-zZ-s49X490h5zUmtJ",
 };
 
 await mkdir("public/fonts", { recursive: true });

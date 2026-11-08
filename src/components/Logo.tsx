@@ -1,5 +1,5 @@
-// شعار إزدان (من ملفات الهوية) — يأخذ لون النص الحالي
-export function Logo({ height = 32, title = "إزدان" }: { height?: number; title?: string }) {
+// شعار ازدان (من ملفات الهوية) — يأخذ لون النص الحالي
+export function Logo({ height = 32, title = "ازدان" }: { height?: number; title?: string }) {
   return (
     <svg viewBox="0 0 426.41 170.12" height={height} width={(height * 426.41) / 170.12} role="img" aria-label={title} fill="currentColor" style={{ display: "block" }}>
       <path d="M304.03,116.69l-.09-.13-.03-.06-2.44-3.29-2.47-3.47h-10.23l7.61,10.49,1.19,1.6-34.97,48.3h2.57l9.7-13.37h48.11l9.74,13.37h10.2l-38.88-53.43ZM276.67,154.22l22.16-30.65.09.13,22.19,30.52h-44.45Z"/>

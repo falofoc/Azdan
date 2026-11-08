@@ -56,31 +56,31 @@ async function storeFile(buf: Buffer) {
 type U = { code: string; type: string; price: number; floor?: string; bedrooms?: number; bathrooms?: number; landArea?: number; builtArea?: number };
 const PROJECTS: { slug: string; name: string; city: string; district: string; type: string; status: string; commissionRate: number; priceFrom: number; deliveryDate: string; adLicense?: string; waflLicense?: string; description: string; highlights: string; units: U[] }[] = [
   {
-    slug: "demo-villas-north", name: "فلل إزدان الشمال (تجريبي)", city: "الرياض", district: "الملقا", type: "فلل", status: "ACTIVE", commissionRate: 2.5, priceFrom: 1650000, deliveryDate: "الربع الثاني 2027",
+    slug: "demo-villas-north", name: "فلل ازدان الشمال (تجريبي)", city: "الرياض", district: "الملقا", type: "فلل", status: "ACTIVE", commissionRate: 2.5, priceFrom: 1650000, deliveryDate: "الربع الثاني 2027",
     adLicense: "7200000000", waflLicense: "WF-1447-0192", description: "فلل مستقلة بتصميم معاصر وواجهات حجرية، على شوارع بعرض 20 مترًا، مع مسابح خاصة للفلل الزاوية.",
     highlights: "ضمان هيكلي 10 سنوات\nمسبح خاص في الفلل الزاوية\nقرب طريق الملك سلمان\nنظام منزل ذكي",
     units: Array.from({ length: 24 }, (_, i) => ({ code: `V-${String(i + 1).padStart(2, "0")}`, type: "فيلا", bedrooms: 5, bathrooms: 6, landArea: 300 + (i % 3) * 30, builtArea: 360 + (i % 4) * 20, price: 1650000 + (i % 4) * 120000 })),
   },
   {
-    slug: "demo-residence", name: "إزدان ريزيدنس (تجريبي)", city: "الرياض", district: "حطين", type: "شقق", status: "ACTIVE", commissionRate: 2, priceFrom: 720000, deliveryDate: "جاهز للسكن",
+    slug: "demo-residence", name: "ازدان ريزيدنس (تجريبي)", city: "الرياض", district: "حطين", type: "شقق", status: "ACTIVE", commissionRate: 2, priceFrom: 720000, deliveryDate: "جاهز للسكن",
     adLicense: "7200000001", description: "شقق سكنية بثلاث وأربع غرف في مبنى بخدمات متكاملة ومواقف خاصة.",
     highlights: "تشطيب فاخر\nمواقف خاصة لكل شقة\nحارس وكاميرات 24 ساعة\nنادٍ رياضي للسكان",
     units: Array.from({ length: 24 }, (_, i) => ({ code: `A-${Math.floor(i / 4) + 1}${(i % 4) + 1}`, type: "شقة", floor: String(Math.floor(i / 4) + 1), bedrooms: i % 2 ? 4 : 3, bathrooms: i % 2 ? 4 : 3, builtArea: i % 2 ? 175 : 145, price: (i % 2 ? 890000 : 720000) + Math.floor(i / 4) * 25000 })),
   },
   {
-    slug: "demo-floors-narjis", name: "أدوار إزدان النرجس (تجريبي)", city: "الرياض", district: "النرجس", type: "أدوار", status: "ACTIVE", commissionRate: 2.25, priceFrom: 980000, deliveryDate: "الربع الأول 2027",
+    slug: "demo-floors-narjis", name: "أدوار ازدان النرجس (تجريبي)", city: "الرياض", district: "النرجس", type: "أدوار", status: "ACTIVE", commissionRate: 2.25, priceFrom: 980000, deliveryDate: "الربع الأول 2027",
     adLicense: "7200000002", waflLicense: "WF-1447-0233", description: "أدوار أرضية وعلوية بمداخل مستقلة وسطوح خاصة للأدوار العلوية.",
     highlights: "مدخل مستقل لكل دور\nسطح خاص للدور العلوي\nقرب المدارس والخدمات",
     units: Array.from({ length: 16 }, (_, i) => ({ code: `F-${Math.floor(i / 2) + 1}${i % 2 ? "U" : "G"}`, type: "دور", floor: i % 2 ? "علوي" : "أرضي", bedrooms: 4, bathrooms: i % 2 ? 4 : 5, builtArea: i % 2 ? 210 : 240, price: i % 2 ? 980000 : 1120000 })),
   },
   {
-    slug: "demo-land-east", name: "أراضي إزدان الشرق (تجريبي)", city: "الدمام", district: "الفيصلية", type: "أراضٍ", status: "ACTIVE", commissionRate: 1.5, priceFrom: 540000, deliveryDate: "إفراغ فوري",
+    slug: "demo-land-east", name: "أراضي ازدان الشرق (تجريبي)", city: "الدمام", district: "الفيصلية", type: "أراضٍ", status: "ACTIVE", commissionRate: 1.5, priceFrom: 540000, deliveryDate: "إفراغ فوري",
     adLicense: "7200000003", description: "مخطط سكني مطوّر بالكامل بالخدمات، صكوك جاهزة للإفراغ.",
     highlights: "بنية تحتية مكتملة\nصكوك جاهزة\nقرب طريق الملك فهد",
     units: Array.from({ length: 20 }, (_, i) => ({ code: `L-${100 + i}`, type: "أرض", landArea: 450 + (i % 5) * 50, price: 540000 + (i % 5) * 60000 })),
   },
   {
-    slug: "demo-townhouses", name: "تاون هاوس إزدان (تجريبي)", city: "جدة", district: "أبحر الشمالية", type: "تاون هاوس", status: "SOON", commissionRate: 2.5, priceFrom: 1100000, deliveryDate: "2028",
+    slug: "demo-townhouses", name: "تاون هاوس ازدان (تجريبي)", city: "جدة", district: "أبحر الشمالية", type: "تاون هاوس", status: "SOON", commissionRate: 2.5, priceFrom: 1100000, deliveryDate: "2028",
     description: "مشروع قادم: تاون هاوس بإطلالات بحرية. يُفتح باب الحجز قريبًا.", highlights: "قرب الواجهة البحرية\nحدائق مشتركة", units: [],
   },
 ];
@@ -179,7 +179,7 @@ export async function seedDemo(db: PrismaClient) {
     const created = ago(o.createdDaysAgo);
     const protectedUntil = o.protectLeft !== undefined ? ahead(o.protectLeft) : new Date(created.getTime() + 60 * DAY);
     const notes = [
-      { kind: "SYSTEM", text: o.assigned ? "أسندت إزدان هذا العميل إليك" : "سُجّل العميل وحُمي باسم الوسيط", createdAt: created, authorId: o.assigned ? admin?.id : b.id },
+      { kind: "SYSTEM", text: o.assigned ? "أسندت ازدان هذا العميل إليك" : "سُجّل العميل وحُمي باسم الوسيط", createdAt: created, authorId: o.assigned ? admin?.id : b.id },
       { kind: "NOTE", text: NOTES[seq % NOTES.length], createdAt: new Date(created.getTime() + DAY), authorId: b.id },
     ];
     const l = await db.lead.create({
@@ -220,7 +220,7 @@ export async function seedDemo(db: PrismaClient) {
     }
     await db.deal.create({ data: { leadId: l.id, brokerId: b.id, projectId: projects[slug].id, unitId: unit.id, status, value: unit.price, baseRate: rate, requestedAt, ...extra } });
     await db.lead.update({ where: { id: l.id }, data: { unitId: unit.id } });
-    const label = { SOLD: "اكتمل البيع واعتُمدت العمولة", RESERVED: `اعتمدت إزدان حجز الوحدة ${unit.code}`, REQUESTED: `طلب حجز الوحدة ${unit.code}`, REJECTED: `رُفض طلب الحجز: ${o.note}`, CANCELLED: `أُلغي الحجز: ${o.note}` }[status];
+    const label = { SOLD: "اكتمل البيع واعتُمدت العمولة", RESERVED: `اعتمدت ازدان حجز الوحدة ${unit.code}`, REQUESTED: `طلب حجز الوحدة ${unit.code}`, REJECTED: `رُفض طلب الحجز: ${o.note}`, CANCELLED: `أُلغي الحجز: ${o.note}` }[status];
     await db.leadNote.create({ data: { leadId: l.id, kind: "SYSTEM", text: label!, authorId: admin?.id, createdAt: ago(o.daysAgo) } });
     if (admin && status !== "REQUESTED") await db.auditLog.create({ data: { actorId: admin.id, action: `deal.${status.toLowerCase()}`, entity: "deal", entityId: l.id, createdAt: ago(o.daysAgo) } });
   }

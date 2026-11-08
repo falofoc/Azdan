@@ -30,20 +30,20 @@ export default async function Onboarding() {
         { label: "إرسال الطلب", done: !editing },
       ],
     },
-    { title: "التحقق", state: st === "SUBMITTED" ? "cur" : ["VERIFIED", "ACTIVE", "SUSPENDED"].includes(st) ? "done" : "todo", desc: "يراجع فريق إزدان سريان رخصة فال ومطابقة الوثائق خلال يومي عمل." },
+    { title: "التحقق", state: st === "SUBMITTED" ? "cur" : ["VERIFIED", "ACTIVE", "SUSPENDED"].includes(st) ? "done" : "todo", desc: "يراجع فريق ازدان سريان رخصة فال ومطابقة الوثائق خلال يومي عمل." },
     { title: "التفعيل", state: st === "VERIFIED" ? "cur" : st === "SUSPENDED" ? "warn" : st === "ACTIVE" ? "done" : "todo", desc: st === "SUSPENDED" ? "الحساب موقوف حاليًا." : "توقيع اتفاقية الوساطة إلكترونيًا، ويُفعّل حسابك فورًا." },
     { title: "البداية", state: "todo", desc: `سجّل أول عميل ليُحمى باسمك ${settings.protectDays} يومًا، واطّلع على المشاريع والوحدات المتاحة.` },
   ];
 
   return (
     <>
-      <PageHeader eyebrow="برنامج وسطاء إزدان" title="طلب الانضمام" sub={`أهلًا ${u.name.split(" ")[0]}، أكمل الخطوات التالية لتفعيل حسابك.`} />
+      <PageHeader eyebrow="برنامج وسطاء ازدان" title="طلب الانضمام" sub={`أهلًا ${u.name.split(" ")[0]}، أكمل الخطوات التالية لتفعيل حسابك.`} />
       <div className="onb">
         <aside className="onb-steps"><VSteps steps={steps} /></aside>
         <div className="stack" style={{ minWidth: 0 }}>
 
       {b.status === "SUSPENDED" && (
-        <div className="note n-bad"><b>الحساب موقوف.</b> {b.reviewNote ?? "تواصل مع فريق إزدان لمعرفة السبب."}</div>
+        <div className="note n-bad"><b>الحساب موقوف.</b> {b.reviewNote ?? "تواصل مع فريق ازدان لمعرفة السبب."}</div>
       )}
 
       {b.status === "NEEDS_CHANGES" && (
@@ -123,7 +123,7 @@ export default async function Onboarding() {
       {b.status === "SUBMITTED" && (
         <section className="card stack">
           <div className="row"><Pill tone="info">قيد المراجعة</Pill><span className="small muted">أُرسل {dateTime(b.submittedAt)}</span></div>
-          <h2>طلبك لدى فريق إزدان</h2>
+          <h2>طلبك لدى فريق ازدان</h2>
           <p className="muted">نتحقق من سريان رخصة فال ومطابقة الوثائق. عند الاعتماد تظهر لك اتفاقية الوساطة للتوقيع هنا مباشرة.</p>
           <dl className="kv">
             <dt>رخصة فال</dt><dd className="num">{b.falNumber} · تنتهي {date(b.falExpiry)}</dd>
@@ -138,7 +138,7 @@ export default async function Onboarding() {
           <div className="row"><Pill tone="ok">تم التحقق من وثائقك</Pill></div>
           <h2>اتفاقية الوساطة العقارية</h2>
           <div className="contract">
-            <p><b>الطرف الأول:</b> شركة إزدان. <b>الطرف الثاني:</b> {b.type === "COMPANY" ? `${b.companyName}، سجل تجاري ${b.crNumber}، ويمثلها ${u.name}` : u.name}، رخصة فال رقم <span className="num">{b.falNumber}</span>.</p>
+            <p><b>الطرف الأول:</b> شركة ازدان. <b>الطرف الثاني:</b> {b.type === "COMPANY" ? `${b.companyName}، سجل تجاري ${b.crNumber}، ويمثلها ${u.name}` : u.name}، رخصة فال رقم <span className="num">{b.falNumber}</span>.</p>
             <ol>{contractClauses(settings.protectDays, settings.payoutDays).map((c, i) => <li key={i}>{c}</li>)}</ol>
             <p className="xs muted">إصدار الاتفاقية {contractVersion()}</p>
           </div>

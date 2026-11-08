@@ -1,6 +1,6 @@
 // القيم المرجعية للمنصة
 
-export const BRAND = "إزدان";
+export const BRAND = "ازدان";
 
 export const STAGES = [
   { key: "NEW", label: "جديد", tone: "info" },

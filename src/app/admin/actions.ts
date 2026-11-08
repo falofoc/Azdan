@@ -62,7 +62,7 @@ export async function approveReservation(_: FormState, fd: FormData): Promise<Fo
       const r = await tx.unit.updateMany({ where: { id: d.unitId!, status: "AVAILABLE" }, data: { status: "RESERVED" } });
       if (r.count !== 1) throw new Error("UNIT_TAKEN");
       await tx.deal.update({ where: { id: d.id }, data: { status: "RESERVED", reservedAt: now } });
-      await tx.lead.update({ where: { id: d.leadId }, data: { stage: "RESERVED", notes: { create: { kind: "SYSTEM", authorId: admin.id, text: `اعتمدت إزدان حجز الوحدة ${d.unit?.code}` } } } });
+      await tx.lead.update({ where: { id: d.leadId }, data: { stage: "RESERVED", notes: { create: { kind: "SYSTEM", authorId: admin.id, text: `اعتمدت ازدان حجز الوحدة ${d.unit?.code}` } } } });
       await tx.leadClaim.updateMany({ where: { phone: d.lead.phone, brokerId: d.brokerId }, data: { expiresAt: FAR() } });
     });
   } catch (e) {
@@ -162,7 +162,7 @@ export async function assignLead(_: FormState, fd: FormData): Promise<FormState>
     data: {
       brokerId, phone, name, projectId, financing: FINANCING.includes(financing) ? financing : null, source: "إسناد من الشركة", assignedByAdmin: true,
       nextFollowUp: now, protectedUntil: expiresAt, consentAt: now,
-      notes: { create: [{ kind: "SYSTEM", authorId: admin.id, text: "أسندت إزدان هذا العميل إليك" }, ...(note ? [{ kind: "NOTE", authorId: admin.id, text: `ملاحظة الإدارة: ${note}` }] : [])] },
+      notes: { create: [{ kind: "SYSTEM", authorId: admin.id, text: "أسندت ازدان هذا العميل إليك" }, ...(note ? [{ kind: "NOTE", authorId: admin.id, text: `ملاحظة الإدارة: ${note}` }] : [])] },
     },
   });
   await db.leadClaim.upsert({ where: { phone }, create: { phone, brokerId, leadId: lead.id, expiresAt }, update: { brokerId, leadId: lead.id, claimedAt: now, expiresAt } });

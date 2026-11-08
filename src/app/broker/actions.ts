@@ -120,7 +120,7 @@ export async function createLead(_: FormState, fd: FormData): Promise<FormState>
   const f = leadFields(fd);
   if (f.name.length < 2) return { error: "اكتب اسم العميل." };
   if (!isValidSaudiMobile(phone)) return { error: "رقم جوال العميل غير صحيح. مثال: 0551234567" };
-  if (fd.get("consent") !== "on") return { error: "أكّد أن العميل وافق على مشاركة بياناته مع إزدان." };
+  if (fd.get("consent") !== "on") return { error: "أكّد أن العميل وافق على مشاركة بياناته مع ازدان." };
   if (u.broker!.falExpiry && u.broker!.falExpiry.getTime() < Date.now()) return { error: "رخصة فال منتهية. حدّثها من صفحة حسابي لتسجيل عملاء جدد." };
   if (f.projectId && !(await db.project.findFirst({ where: { id: f.projectId, status: { not: "HIDDEN" } } }))) f.projectId = null;
   const own = await db.lead.findUnique({ where: { brokerId_phone: { brokerId: u.id, phone } } });

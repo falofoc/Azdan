@@ -1,4 +1,4 @@
-# نشر منصة وسطاء إزدان على Render (الخطة المجانية)
+# نشر منصة وسطاء ازدان على Render (الخطة المجانية)
 # الخطوات بالتفصيل في DEPLOY.md
 services:
   - type: web
@@ -31,6 +31,6 @@ services:
       - key: ADMIN_PASSWORD
         sync: false
       - key: ADMIN_NAME
-        value: إدارة إزدان
+        value: إدارة ازدان
       - key: SEED_DEMO
         value: "1"

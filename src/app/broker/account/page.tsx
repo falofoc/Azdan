@@ -32,7 +32,7 @@ export default async function Account() {
             <dt>رخصة فال</dt><dd className="num">{b.falNumber ?? "—"} {falDays !== null && <Pill tone={falDays < 0 ? "bad" : falDays <= 30 ? "warn" : "ok"}>{falDays < 0 ? "منتهية" : `تنتهي ${date(b.falExpiry)}`}</Pill>}</dd>
             {b.signedAt && <><dt>الاتفاقية</dt><dd>وُقّعت {dateTime(b.signedAt)} · إصدار {b.contractVersion}</dd></>}
           </dl>
-          <p className="xs muted">لتعديل الاسم أو بيانات المنشأة بعد الاعتماد، تواصل مع فريق إزدان.</p>
+          <p className="xs muted">لتعديل الاسم أو بيانات المنشأة بعد الاعتماد، تواصل مع فريق ازدان.</p>
         </section>
 
         <section className="card stack">

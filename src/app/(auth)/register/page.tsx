@@ -41,7 +41,7 @@ export default async function RegisterPage() {
         <h3>مراحل الانضمام</h3>
         <VSteps steps={[
           { title: "التسجيل", state: "cur", desc: "أنشئ حسابك، ثم أكمل بيانات رخصة فال وارفع الوثائق." },
-          { title: "التحقق", state: "todo", desc: "يراجع فريق إزدان طلبك خلال يومي عمل." },
+          { title: "التحقق", state: "todo", desc: "يراجع فريق ازدان طلبك خلال يومي عمل." },
           { title: "التفعيل", state: "todo", desc: "توقّع اتفاقية الوساطة إلكترونيًا فيُفعّل حسابك." },
           { title: "البداية", state: "todo", desc: "سجّل عملاءك واحجز لهم وتابع عمولتك." },
         ]} />

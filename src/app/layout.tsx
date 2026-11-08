@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "وسطاء إزدان", template: "%s · وسطاء إزدان" },
-  description: "منصة وسطاء إزدان العقارية: سوّق مشاريع إزدان، احمِ عملاءك، وتابع عمولتك بوضوح.",
+  title: { default: "وسطاء ازدان", template: "%s · وسطاء ازدان" },
+  description: "منصة وسطاء ازدان العقارية: سوّق مشاريع ازدان، احمِ عملاءك، وتابع عمولتك بوضوح.",
   icons: { icon: "/brand/favicon.svg" },
 };
 
@@ -11,10 +11,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#3a3f35" },
-    { media: "(prefers-color-scheme: dark)", color: "#11130f" },
-  ],
+  themeColor: "#faf6f0",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

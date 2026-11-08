@@ -19,7 +19,7 @@ export default async function Landing() {
     <div className="lp2">
       <header className="lp2-top">
         <div className="lp-in row-between">
-          <Link href="/" aria-label="إزدان"><Logo height={30} /></Link>
+          <Link href="/" aria-label="ازدان"><Logo height={30} /></Link>
           <nav className="row">
             {home ? (
               <Link className="btn btn-light btn-sm" href={home}>لوحتي</Link>
@@ -35,7 +35,7 @@ export default async function Landing() {
 
       <section className="lp2-hero">
         <div className="lp-in lp2-hero-in">
-          <p className="lp2-kicker">برنامج وسطاء إزدان</p>
+          <p className="lp2-kicker">برنامج وسطاء ازدان</p>
           <h1 className="lp2-h1">سوّق بثقة.<br /><span>عميلك محمي، وعمولتك واضحة.</span></h1>
           <div className="row lp2-cta">
             <Link className="btn btn-p" href={home ?? "/register"}>{home ? "لوحتي" : "انضم كوسيط"}</Link>

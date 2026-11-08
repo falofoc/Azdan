@@ -42,7 +42,7 @@ export default async function ClientPage({ params, searchParams }: { params: Pro
       <Link href="/broker/clients" className="link small">→ عملائي</Link>
       <PageHeader
         title={lead.name}
-        sub={<span className="row" style={{ gap: 8 }}><span className="ltr">{lead.phone}</span><StatusPill map={STAGE_MAP} value={lead.stage} />{lead.assignedByAdmin && <Pill tone="info">مُسند من إزدان</Pill>}</span>}
+        sub={<span className="row" style={{ gap: 8 }}><span className="ltr">{lead.phone}</span><StatusPill map={STAGE_MAP} value={lead.stage} />{lead.assignedByAdmin && <Pill tone="info">مُسند من ازدان</Pill>}</span>}
         actions={<a className="btn btn-o" href={`https://wa.me/966${lead.phone.slice(1)}`} target="_blank" rel="noreferrer">واتساب</a>}
       />
 
