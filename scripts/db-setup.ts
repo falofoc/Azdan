@@ -3,7 +3,11 @@ import { execSync } from "node:child_process";
 import { cleanDbUrl } from "../src/lib/dburl";
 
 const db = cleanDbUrl(process.env.DATABASE_URL, "DATABASE_URL");
-const direct = cleanDbUrl(process.env.DIRECT_URL || process.env.DATABASE_URL, "DIRECT_URL");
+let direct = cleanDbUrl(process.env.DIRECT_URL || process.env.DATABASE_URL, "DIRECT_URL");
+if (!direct.ok && db.ok) {
+  console.log(`⚠ DIRECT_URL غير صالح (${direct.notes.at(-1)})؛ سيُستخدم DATABASE_URL بدلًا منه.`);
+  direct = { ...db, notes: [] };
+}
 for (const [name, r] of [["DATABASE_URL", db], ["DIRECT_URL", direct]] as const) {
   console.log(`${r.ok ? "✓" : "✗"} ${name}: ${r.summary}`);
   for (const n of r.notes) console.log(`   - ${n}`);
