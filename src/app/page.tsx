@@ -2,15 +2,14 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { db, getSettings } from "@/lib/db";
 import { currentUser } from "@/lib/session";
-import { pct, sar, num } from "@/lib/format";
+import { pct, num } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
 export default async function Landing() {
-  const [user, settings, projects, top] = await Promise.all([
+  const [user, settings, top] = await Promise.all([
     currentUser(),
     getSettings(),
-    db.project.findMany({ where: { status: "ACTIVE" }, orderBy: { createdAt: "desc" }, take: 3, include: { _count: { select: { units: { where: { status: "AVAILABLE" } } } } } }),
     db.project.aggregate({ where: { status: "ACTIVE" }, _max: { commissionRate: true } }),
   ]);
   const home = user ? (user.role === "ADMIN" ? "/admin" : "/broker") : null;
@@ -62,29 +61,6 @@ export default async function Landing() {
           </ol>
         </div>
       </section>
-
-      {projects.length > 0 && (
-        <section className="lp2-sec lp2-soft">
-          <div className="lp-in stack">
-            <h2 className="lp2-h2">مشاريع متاحة الآن</h2>
-            <div className="lp2-projects">
-              {projects.map((p) => (
-                <article key={p.id} className="lp2-proj">
-                  <div className="lp2-proj-art" aria-hidden="true" />
-                  <div className="lp2-proj-body">
-                    <h3>{p.name}</h3>
-                    <p>{[p.district, p.city].filter(Boolean).join("، ")}</p>
-                    <div className="lp2-proj-meta">
-                      <span>عمولة <b>{pct(p.commissionRate)}</b></span>
-                      {p.priceFrom ? <span>من <b>{sar(p.priceFrom)}</b></span> : <span>{num(p._count.units)} وحدة</span>}
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       <section className="lp2-end">
         <div className="lp-in lp2-end-in">
