@@ -1,0 +1,219 @@
+// منصة وسطاء إزدان — مخطط قاعدة البيانات
+// SQLite للتطوير؛ للإنتاج غيّر provider إلى "postgresql".
+// الحقول النصية ذات القيم المحددة موثقة في src/lib/constants.ts
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  phone        String   @unique // صيغة موحدة 05xxxxxxxx
+  email        String?
+  name         String
+  passwordHash String
+  role         String   @default("BROKER") // BROKER | ADMIN
+  createdAt    DateTime @default(now())
+  lastLoginAt  DateTime?
+
+  broker    BrokerProfile?
+  documents Document[]
+  leads     Lead[]
+  deals     Deal[]
+  notes     LeadNote[]
+  audit     AuditLog[]
+}
+
+model BrokerProfile {
+  userId         String    @id
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type           String    @default("INDIVIDUAL") // INDIVIDUAL | COMPANY
+  companyName    String?
+  crNumber       String?   // السجل التجاري
+  vatNumber      String?   // الرقم الضريبي (يُضاف 15% على العمولة)
+  city           String    @default("الرياض")
+  falNumber      String?   // رخصة فال من الهيئة العامة للعقار
+  falExpiry      DateTime?
+  iban           String?
+  bankName       String?
+  // DRAFT → SUBMITTED → (NEEDS_CHANGES ↺) → VERIFIED → (توقيع) ACTIVE ⇄ SUSPENDED
+  status         String    @default("DRAFT")
+  reviewNote     String?
+  submittedAt    DateTime?
+  verifiedAt     DateTime?
+  signedAt       DateTime?
+  signatureName  String?
+  signatureIp    String?
+  contractVersion String?
+  activatedAt    DateTime?
+  updatedAt      DateTime  @updatedAt
+}
+
+model Document {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind       String   // NATIONAL_ID | FAL | IBAN | CR
+  fileName   String
+  mime       String
+  size       Int
+  storageKey String   @unique
+  uploadedAt DateTime @default(now())
+
+  @@index([userId, kind])
+}
+
+model Project {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  name           String
+  city           String
+  district       String?
+  type           String    // فلل | شقق | أدوار | تاون هاوس | أراضٍ
+  status         String    @default("ACTIVE") // ACTIVE | SOON | SOLD_OUT | HIDDEN
+  description    String?
+  highlights     String?   // سطر لكل ميزة
+  priceFrom      Int?
+  commissionRate Float     // نسبة العمولة الأساسية %
+  adLicense      String?   // رقم ترخيص الإعلان العقاري
+  waflLicense    String?   // ترخيص البيع على الخارطة (وافي) إن وجد
+  deliveryDate   String?
+  locationUrl    String?
+  brochureUrl    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  units Unit[]
+  leads Lead[]
+  deals Deal[]
+}
+
+model Unit {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  code      String   // رقم الوحدة
+  type      String   // فيلا | شقة | دور | تاون هاوس | أرض
+  floor     String?
+  bedrooms  Int?
+  bathrooms Int?
+  landArea  Float?   // مساحة الأرض م²
+  builtArea Float?   // مسطح البناء م²
+  price     Int
+  status    String   @default("AVAILABLE") // AVAILABLE | RESERVED | SOLD | UNAVAILABLE
+  updatedAt DateTime @updatedAt
+
+  deals Deal[]
+  leads Lead[]
+
+  @@unique([projectId, code])
+}
+
+model Lead {
+  id            String    @id @default(cuid())
+  brokerId      String
+  broker        User      @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  name          String
+  phone         String
+  stage         String    @default("NEW") // NEW | CONTACTED | QUALIFIED | VISIT | RESERVED | SOLD | LOST
+  projectId     String?
+  project       Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  unitId        String?
+  unit          Unit?     @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  financing     String?
+  source        String?
+  budget        Int?
+  nextFollowUp  DateTime?
+  lostReason    String?
+  assignedByAdmin Boolean @default(false)
+  consentAt     DateTime? // إقرار الوسيط بموافقة العميل على مشاركة بياناته
+  protectedUntil DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  notes LeadNote[]
+  deal  Deal?
+
+  @@unique([brokerId, phone])
+  @@index([brokerId, stage])
+}
+
+// قيد حماية العميل: صف واحد لكل رقم جوال على مستوى المنصة
+model LeadClaim {
+  phone     String   @id
+  brokerId  String
+  leadId    String
+  claimedAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model LeadNote {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  authorId  String?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  kind      String   @default("NOTE") // NOTE | STAGE | SYSTEM
+  text      String
+  createdAt DateTime @default(now())
+
+  @@index([leadId, createdAt])
+}
+
+model Deal {
+  id          String    @id @default(cuid())
+  leadId      String    @unique
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  brokerId    String
+  broker      User      @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id])
+  unitId      String?
+  unit        Unit?     @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  // REQUESTED → RESERVED → SOLD ؛ أو REJECTED / CANCELLED
+  status      String    @default("REQUESTED")
+  value       Int       // قيمة الصفقة بالريال
+  baseRate    Float     // نسبة المشروع وقت الصفقة
+  bonusRate   Float     @default(0) // مكافأة الفئة وقت البيع
+  commission  Int       @default(0) // مبلغ العمولة قبل الضريبة
+  vat         Int       @default(0)
+  // EXPECTED → APPROVED → PAID
+  commissionStatus String @default("EXPECTED")
+  adminNote   String?
+  paymentRef  String?
+  requestedAt DateTime  @default(now())
+  reservedAt  DateTime?
+  soldAt      DateTime?
+  approvedAt  DateTime?
+  paidAt      DateTime?
+  closedAt    DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@index([brokerId, status])
+}
+
+model Settings {
+  id             Int     @id @default(1)
+  protectDays    Int     @default(60)
+  supportPhone   String?
+  supportEmail   String?
+  payoutDays     Int     @default(30)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  meta      String?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+}

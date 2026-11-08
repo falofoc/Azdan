@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.env
+.env.local
+# قاعدة البيانات والملفات المرفوعة (بيانات حساسة)
+prisma/*.db
+prisma/*.db-journal
+storage/
+# خطوط الهوية مرخّصة تجاريًا: تُنزّل بـ npm run fonts ولا تُرفع للمستودع العام
+public/fonts/*
+!public/fonts/.gitkeep
