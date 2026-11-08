@@ -1,0 +1,14 @@
+# زيارة يومية للمنصة حتى لا تتوقف قاعدة Supabase المجانية (تتوقف بعد 7 أيام بلا نشاط)
+# فعّلها بإضافة متغير المستودع SITE_URL (Settings → Secrets and variables → Actions → Variables)
+name: keep-alive
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    if: ${{ vars.SITE_URL != '' }}
+    steps:
+      - name: زيارة الصفحة الرئيسية (تستعلم قاعدة البيانات)
+        run: curl -fsS --retry 5 --retry-delay 30 --max-time 120 -o /dev/null -w "%{http_code}\n" "${{ vars.SITE_URL }}"

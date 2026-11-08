@@ -31,11 +31,11 @@
 
 ## التشغيل محليًا
 
-المتطلبات: Node.js 20 أو أحدث.
+المتطلبات: Node.js 20 أو أحدث، وقاعدة PostgreSQL (محلية أو مشروع Supabase مجاني).
 
 ```bash
 npm install
-cp .env.example .env        # ثم عدّل SESSION_SECRET وADMIN_PHONE وADMIN_PASSWORD
+cp .env.example .env        # ثم ضع رابط القاعدة وعدّل SESSION_SECRET وADMIN_PHONE وADMIN_PASSWORD
 npm run setup               # ينزّل خطوط الهوية، ينشئ قاعدة البيانات، ينشئ حساب المدير ومشاريع تجريبية
 npm run dev                 # http://localhost:3000
 ```
@@ -56,11 +56,11 @@ npm run dev                 # http://localhost:3000
 ## الخطوط
 خطوط Doran وHT Rakik و29LT Zarid مرخّصة تجاريًا، ولذلك **لا تُرفع إلى هذا المستودع العام**. يجلبها أمر `npm run fonts` من مجلد الهوية في Google Drive إلى `public/fonts`. إن لم تتوفر الخطوط تعمل المنصة بخطوط بديلة. وتأكد من أن ترخيص الخطوط يسمح باستخدامها على الويب.
 
-## النشر للإنتاج
-1. **قاعدة البيانات:** غيّر `provider` في `prisma/schema.prisma` إلى `"postgresql"` وضع رابط PostgreSQL في `DATABASE_URL`، ثم نفّذ `npx prisma db push` و`npm run db:seed`.
-2. **الوثائق:** اجعل `UPLOAD_DIR` مجلدًا دائمًا على الخادم وخذ له نسخًا احتياطية. وعند النشر على منصة بلا قرص دائم (مثل Vercel) يلزم نقل التخزين إلى خدمة تخزين سحابية خاصة، والتعديل يكون في `src/lib/uploads.ts` فقط.
-3. **المتغيرات:** `SESSION_SECRET` عشوائي بطول 48 حرفًا على الأقل، وكلمة مرور قوية للمدير.
-4. يناسبها أي خادم Node.js، مثل Railway أو Render أو خادم سحابي محلي، مع شهادة HTTPS.
+## النشر
+**مجانًا على Render + Supabase:** الخطوات كاملة في [DEPLOY.md](DEPLOY.md). الإعداد جاهز في `render.yaml`.
+
+- الوثائق تُحفظ في حاوية خاصة على Supabase Storage عند ضبط `SUPABASE_URL` و`SUPABASE_SERVICE_ROLE_KEY`، وإلا فعلى القرص في `UPLOAD_DIR`.
+- يناسب المنصة أي خادم Node.js مع PostgreSQL، ويُنقل بنفس المتغيرات.
 
 ## قبل الإطلاق الرسمي
 - [ ] مراجعة نص اتفاقية الوساطة (`src/lib/contract.ts`) وسياسة الخصوصية من المستشار القانوني.
@@ -70,7 +70,7 @@ npm run dev                 # http://localhost:3000
 - [ ] تعبئة جوال وبريد الدعم من صفحة الإعدادات.
 
 ## البنية التقنية
-Next.js 15 (App Router وServer Actions) وTypeScript وPrisma (SQLite للتطوير، وPostgreSQL للإنتاج)، مع jose للجلسات وbcryptjs لكلمات المرور. ولا توجد مكتبات واجهة خارجية: التصميم مبني بـ CSS على رموز الهوية في `src/app/globals.css`.
+Next.js 15 (App Router وServer Actions) وTypeScript وPrisma مع PostgreSQL، وSupabase Storage للوثائق، مع jose للجلسات وbcryptjs لكلمات المرور. ولا توجد مكتبات واجهة خارجية: التصميم مبني بـ CSS على رموز الهوية في `src/app/globals.css`.
 
 ```
 prisma/schema.prisma      نموذج البيانات

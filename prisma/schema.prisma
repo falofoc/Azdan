@@ -1,5 +1,5 @@
 // منصة وسطاء إزدان — مخطط قاعدة البيانات
-// SQLite للتطوير؛ للإنتاج غيّر provider إلى "postgresql".
+// PostgreSQL (مثل Supabase). DATABASE_URL للاتصال عبر المجمّع، وDIRECT_URL لتحديث المخطط.
 // الحقول النصية ذات القيم المحددة موثقة في src/lib/constants.ts
 
 generator client {
@@ -7,8 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
