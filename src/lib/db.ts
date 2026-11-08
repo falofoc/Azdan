@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { cleanDbUrl } from "./dburl";
 
 const g = globalThis as unknown as { prisma?: PrismaClient };
-export const db = g.prisma ?? new PrismaClient();
+const clean = cleanDbUrl(process.env.DATABASE_URL);
+export const db = g.prisma ?? new PrismaClient(clean.ok ? { datasources: { db: { url: clean.url } } } : undefined);
 if (process.env.NODE_ENV !== "production") g.prisma = db;
 
 export async function getSettings() {

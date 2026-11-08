@@ -13,7 +13,7 @@
     "fonts": "node scripts/fetch-fonts.mjs",
     "test": "tsx --test src/lib/*.test.ts",
     "setup": "npm run fonts; prisma db push && npm run db:seed",
-    "render:build": "npm run fonts; prisma generate && prisma db push --skip-generate && npm run db:seed && next build"
+    "render:build": "npm run fonts; prisma generate && tsx scripts/db-setup.ts && next build"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
