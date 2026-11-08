@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { requireBroker } from "@/lib/session";
 import { db, getSettings } from "@/lib/db";
 import { ActionForm, Submit } from "@/components/forms";
-import { PageHeader, Stepper, Pill } from "@/components/ui";
+import { PageHeader, Pill, VSteps, type VStep } from "@/components/ui";
 import { CITIES, DOC_KINDS, type DocKind } from "@/lib/constants";
 import { contractClauses, contractVersion } from "@/lib/contract";
 import { date, dateTime, toDateInput } from "@/lib/format";
@@ -10,20 +10,37 @@ import { saveProfile, uploadDocument, submitApplication, signContract } from "..
 
 export const metadata = { title: "طلب الانضمام" };
 
-const STEPS = ["البيانات والوثائق", "مراجعة إزدان", "توقيع الاتفاقية", "التفعيل"];
-
 export default async function Onboarding() {
   const u = await requireBroker({ active: false });
   const b = u.broker!;
   if (b.status === "ACTIVE") redirect("/broker");
   const [docs, settings] = await Promise.all([db.document.findMany({ where: { userId: u.id }, orderBy: { uploadedAt: "desc" } }), getSettings()]);
   const docOf = (k: DocKind) => docs.find((d) => d.kind === k);
-  const step = { DRAFT: 0, NEEDS_CHANGES: 0, SUBMITTED: 1, VERIFIED: 2, SUSPENDED: 3 }[b.status] ?? 0;
+  const st = b.status;
+  const required: DocKind[] = ["NATIONAL_ID", "FAL", ...(b.type === "COMPANY" ? (["CR"] as DocKind[]) : [])];
+  const editing = st === "DRAFT" || st === "NEEDS_CHANGES";
+  const steps: VStep[] = [
+    {
+      title: "التسجيل", state: st === "DRAFT" ? "cur" : st === "NEEDS_CHANGES" ? "warn" : "done",
+      desc: st === "NEEDS_CHANGES" ? "أعد إرسال الطلب بعد التعديل المطلوب." : "بياناتك ورخصة فال والوثائق.",
+      items: [
+        { label: "إنشاء الحساب", done: true },
+        { label: "بيانات رخصة فال", done: !!(b.falNumber && b.falExpiry) },
+        { label: "الوثائق المطلوبة", done: required.every((k) => !!docOf(k)) },
+        { label: "إرسال الطلب", done: !editing },
+      ],
+    },
+    { title: "التحقق", state: st === "SUBMITTED" ? "cur" : ["VERIFIED", "ACTIVE", "SUSPENDED"].includes(st) ? "done" : "todo", desc: "يراجع فريق إزدان سريان رخصة فال ومطابقة الوثائق خلال يومي عمل." },
+    { title: "التفعيل", state: st === "VERIFIED" ? "cur" : st === "SUSPENDED" ? "warn" : st === "ACTIVE" ? "done" : "todo", desc: st === "SUSPENDED" ? "الحساب موقوف حاليًا." : "توقيع اتفاقية الوساطة إلكترونيًا، ويُفعّل حسابك فورًا." },
+    { title: "البداية", state: "todo", desc: `سجّل أول عميل ليُحمى باسمك ${settings.protectDays} يومًا، واطّلع على المشاريع والوحدات المتاحة.` },
+  ];
 
   return (
     <>
       <PageHeader eyebrow="برنامج وسطاء إزدان" title="طلب الانضمام" sub={`أهلًا ${u.name.split(" ")[0]}، أكمل الخطوات التالية لتفعيل حسابك.`} />
-      <Stepper steps={STEPS} current={step} />
+      <div className="onb">
+        <aside className="onb-steps"><VSteps steps={steps} /></aside>
+        <div className="stack" style={{ minWidth: 0 }}>
 
       {b.status === "SUSPENDED" && (
         <div className="note n-bad"><b>الحساب موقوف.</b> {b.reviewNote ?? "تواصل مع فريق إزدان لمعرفة السبب."}</div>
@@ -134,6 +151,8 @@ export default async function Onboarding() {
           </ActionForm>
         </section>
       )}
+        </div>
+      </div>
     </>
   );
 }

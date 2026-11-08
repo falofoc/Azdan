@@ -8,6 +8,7 @@ import { str, optStr, optInt, optFloat, type FormState } from "@/lib/form";
 import { CITIES, FINANCING, PROJECT_STATUS, PROJECT_TYPES, UNIT_STATUS, UNIT_TYPES } from "@/lib/constants";
 import { DAY_MS, claimBlocks, computeCommission, isValidSaudiMobile, normalizePhone, tierFor } from "@/lib/rules";
 import { date } from "@/lib/format";
+import { removeUpload } from "@/lib/uploads";
 
 const done = (message?: string): FormState => ({ ok: true, message });
 const FAR = () => new Date(Date.now() + 3650 * DAY_MS);
@@ -284,4 +285,27 @@ export async function addAdmin(_: FormState, fd: FormData): Promise<FormState> {
   await audit(admin.id, "admin.create", "user", u.id);
   revalidatePath("/admin/settings");
   return done(`أُضيف ${name} إلى فريق الإدارة.`);
+}
+
+/* ───────────── البيانات التجريبية ───────────── */
+
+export async function deleteDemoData(_: FormState, fd: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  if (str(fd, "confirm") !== "حذف") return { error: "اكتب كلمة «حذف» للتأكيد." };
+  const users = await db.user.findMany({ where: { isDemo: true }, select: { id: true, documents: { select: { storageKey: true } } } });
+  const ids = users.map((u) => u.id);
+  const keys = users.flatMap((u) => u.documents.map((d) => d.storageKey));
+  await db.leadClaim.deleteMany({ where: { brokerId: { in: ids } } });
+  await db.user.deleteMany({ where: { id: { in: ids } } }); // تحذف معها العملاء والصفقات والوثائق والملاحظات
+  for (const k of keys) await removeUpload(k);
+  // المشاريع التجريبية: تُحذف إن لم تعد عليها صفقات حقيقية، وإلا تُخفى
+  const projects = await db.project.findMany({ where: { isDemo: true }, select: { id: true, _count: { select: { deals: true } } } });
+  let hidden = 0;
+  for (const p of projects) {
+    if (p._count.deals) { await db.project.update({ where: { id: p.id }, data: { status: "HIDDEN" } }); hidden++; }
+    else await db.project.delete({ where: { id: p.id } });
+  }
+  await audit(admin.id, "demo.delete", "settings", "1", { users: ids.length, projects: projects.length });
+  revalidatePath("/", "layout");
+  return done(`حُذف ${ids.length} وسيط تجريبي و${projects.length - hidden} مشروع تجريبي${hidden ? `، وأُخفي ${hidden} لارتباطه بصفقات حقيقية` : ""}.`);
 }

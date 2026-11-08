@@ -19,6 +19,7 @@ model User {
   name         String
   passwordHash String
   role         String   @default("BROKER") // BROKER | ADMIN
+  isDemo       Boolean  @default(false) // بيانات تجريبية تُحذف من الإعدادات
   createdAt    DateTime @default(now())
   lastLoginAt  DateTime?
 
@@ -86,6 +87,7 @@ model Project {
   deliveryDate   String?
   locationUrl    String?
   brochureUrl    String?
+  isDemo         Boolean   @default(false)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
@@ -204,6 +206,7 @@ model Settings {
   supportPhone   String?
   supportEmail   String?
   payoutDays     Int     @default(30)
+  demoSeededAt   DateTime?
 }
 
 model AuditLog {

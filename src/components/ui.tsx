@@ -56,3 +56,30 @@ export function Stepper({ steps, current }: { steps: string[]; current: number }
 
 export const initials = (n: string) =>
   (n || "؟").trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join(" ");
+
+export type VStep = { title: string; desc: ReactNode; state: "done" | "cur" | "todo" | "warn"; items?: { label: string; done: boolean }[] };
+
+/** مراحل عمودية: كل مرحلة بحالتها ووصفها وقائمة مهامها */
+export function VSteps({ steps, label = "مراحل الانضمام" }: { steps: VStep[]; label?: string }) {
+  return (
+    <ol className="vsteps" aria-label={label}>
+      {steps.map((s, i) => (
+        <li key={s.title} className={`vs-${s.state}`} aria-current={s.state === "cur" || s.state === "warn" ? "step" : undefined}>
+          <span className="vs-mark" aria-hidden="true">{s.state === "done" ? "✓" : s.state === "warn" ? "!" : i + 1}</span>
+          <div className="vs-body">
+            <div className="vs-title">
+              <b>{s.title}</b>
+              <span className="vs-state">{s.state === "done" ? "مكتملة" : s.state === "cur" ? "الآن" : s.state === "warn" ? "تحتاج إجراء" : "لاحقًا"}</span>
+            </div>
+            <div className="vs-desc">{s.desc}</div>
+            {s.items && (
+              <ul className="vs-items">
+                {s.items.map((it) => <li key={it.label} className={it.done ? "ok" : ""}><span aria-hidden="true">{it.done ? "✓" : "○"}</span>{it.label}</li>)}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}

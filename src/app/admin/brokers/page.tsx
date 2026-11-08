@@ -15,7 +15,7 @@ export default async function Brokers({ searchParams }: { searchParams: Promise<
   const term = q.trim();
   const brokers = await db.brokerProfile.findMany({
     where: { ...(s !== "all" ? { status: s } : {}), ...(term ? { OR: [{ user: { name: { contains: term } } }, { user: { phone: { contains: term } } }, { falNumber: { contains: term } }, { companyName: { contains: term } }] } : {}) },
-    include: { user: { select: { name: true, phone: true, _count: { select: { leads: true } } } } },
+    include: { user: { select: { name: true, phone: true, isDemo: true, _count: { select: { leads: true } } } } },
     orderBy: [{ submittedAt: "desc" }],
     take: 300,
   });
@@ -44,7 +44,7 @@ export default async function Brokers({ searchParams }: { searchParams: Promise<
                 const exp = b.falExpiry ? +b.falExpiry < now : false;
                 return (
                   <tr key={b.userId}>
-                    <td><Link className="link" href={`/admin/brokers/${b.userId}`}>{b.user.name}</Link><div className="xs muted ltr">{b.user.phone}</div></td>
+                    <td><Link className="link" href={`/admin/brokers/${b.userId}`}>{b.user.name}</Link>{b.user.isDemo && <span className="pill t-warn" style={{ marginInlineStart: 6 }}>تجريبي</span>}<div className="xs muted ltr">{b.user.phone}</div></td>
                     <td className="small">{b.type === "COMPANY" ? b.companyName : "فرد"}<div className="xs muted">{b.city}</div></td>
                     <td className="small num">{b.falNumber ?? "—"}{b.falExpiry && <div className={`xs ${exp ? "err" : "muted"}`}>{exp ? "منتهية " : "حتى "}{date(b.falExpiry)}</div>}</td>
                     <td><StatusPill map={BROKER_STATUS} value={b.status} /></td>

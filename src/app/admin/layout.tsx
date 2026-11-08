@@ -16,5 +16,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/leads", label: "العملاء", icon: "inbox" },
     { href: "/admin/settings", label: "الإعدادات", icon: "gear" },
   ];
-  return <AppShell items={items} role="إدارة برنامج الوسطاء" user={{ name: u.name, sub: "مدير" }}>{children}</AppShell>;
+  return <AppShell items={items} role="إدارة برنامج الوسطاء" user={{ name: u.name, sub: "مدير", avatar: "م" }}>{children}</AppShell>;
 }

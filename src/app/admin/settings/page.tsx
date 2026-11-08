@@ -3,13 +3,18 @@ import { db, getSettings } from "@/lib/db";
 import { PageHeader } from "@/components/ui";
 import { ActionForm, Submit } from "@/components/forms";
 import { dateTime } from "@/lib/format";
-import { saveSettings, addAdmin } from "../actions";
+import { saveSettings, addAdmin, deleteDemoData } from "../actions";
 
 export const metadata = { title: "الإعدادات" };
 
 export default async function Settings() {
   await requireAdmin();
-  const [s, admins] = await Promise.all([getSettings(), db.user.findMany({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } })]);
+  const [s, admins, demoUsers, demoProjects] = await Promise.all([
+    getSettings(),
+    db.user.findMany({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } }),
+    db.user.count({ where: { isDemo: true } }),
+    db.project.count({ where: { isDemo: true } }),
+  ]);
   return (
     <>
       <PageHeader title="الإعدادات" />
@@ -41,6 +46,20 @@ export default async function Settings() {
           </details>
         </section>
       </div>
+      {demoUsers === 0 && demoProjects === 0 && s.demoSeededAt && (
+        <p className="note n-ok">لا توجد بيانات تجريبية في المنصة. البيانات الحالية حقيقية بالكامل.</p>
+      )}
+      {(demoUsers > 0 || demoProjects > 0) && (
+        <section className="card stack" style={{ borderColor: "var(--warn)" }}>
+          <div className="card-h"><h2>البيانات التجريبية</h2><span className="pill t-warn">{demoUsers} وسيط · {demoProjects} مشروع</span></div>
+          <p className="small muted">المنصة تحتوي بيانات تجريبية لعرض وظائفها: وسطاء بكل الحالات وعملاء وحجوزات وعمولات. احذفها قبل الإطلاق الرسمي. لا يتأثر أي حساب أو مشروع حقيقي، ولن تُضاف مرة أخرى.</p>
+          <p className="small">دخول الوسطاء التجريبيين: الجوال من <span className="ltr">0590000001</span> إلى <span className="ltr">0590000010</span> وكلمة المرور <span className="ltr">Demo-Broker-2026</span></p>
+          <ActionForm action={deleteDemoData} className="row">
+            <input className="input" name="confirm" id="demo-confirm" placeholder="اكتب: حذف" style={{ width: 160 }} aria-label="تأكيد الحذف" />
+            <Submit className="btn btn-danger" pending="جارٍ الحذف…">حذف كل البيانات التجريبية</Submit>
+          </ActionForm>
+        </section>
+      )}
     </>
   );
 }

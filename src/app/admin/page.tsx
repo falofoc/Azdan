@@ -32,7 +32,7 @@ export default async function AdminHome() {
         <Stat k="وسطاء نشطون" v={num(activeBrokers)} />
         <Stat k="الوحدات" v={`${num(uc("AVAILABLE"))} متاحة`} s={`${num(uc("RESERVED"))} محجوزة · ${num(uc("SOLD"))} مباعة`} />
       </div>
-      <div className="grid-2">
+      <div className="grid-2 wide">
         <section className="card">
           <div className="card-h"><h2>طلبات حجز بانتظار التأكيد</h2><Link className="link small" href="/admin/deals">كل الحجوزات</Link></div>
           {reqs.length ? <div className="list">{reqs.map((d) => (

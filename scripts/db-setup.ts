@@ -2,6 +2,9 @@
 import { execSync } from "node:child_process";
 import { cleanDbUrl } from "../src/lib/dburl";
 
+// للتشغيل المحلي: قراءة .env إن وُجد (في Render تأتي المتغيرات من البيئة مباشرة)
+try { process.loadEnvFile(".env"); } catch { /* لا يوجد ملف .env */ }
+
 const db = cleanDbUrl(process.env.DATABASE_URL, "DATABASE_URL");
 let direct = cleanDbUrl(process.env.DIRECT_URL || process.env.DATABASE_URL, "DIRECT_URL");
 if (!direct.ok && db.ok) {

@@ -5,7 +5,7 @@ import { SideNav, TabBar, type NavItem } from "./Nav";
 import { logout } from "@/app/(auth)/actions";
 import { initials } from "./ui";
 
-export function AppShell({ items, user, role, children }: { items: NavItem[]; user: { name: string; sub?: string }; role: string; children: ReactNode }) {
+export function AppShell({ items, user, role, children }: { items: NavItem[]; user: { name: string; sub?: string; avatar?: string }; role: string; children: ReactNode }) {
   return (
     <div className="shell">
       <aside className="side">
@@ -15,7 +15,7 @@ export function AppShell({ items, user, role, children }: { items: NavItem[]; us
         </Link>
         <SideNav items={items} />
         <div className="side-user">
-          <span className="av">{initials(user.name)}</span>
+          <span className="av">{user.avatar ?? initials(user.name)}</span>
           <div className="grow">
             <div className="title">{user.name}</div>
             {user.sub && <div className="xs">{user.sub}</div>}
