@@ -73,7 +73,8 @@ say "4/5 التشغيل"
 pm2 start npm --name azdan-brokers --cwd "$APP" -- start -- -p "$PORT" -H 127.0.0.1
 pm2 save
 # إعادة التشغيل تلقائيًا بعد إقلاع الخادم (بدون sudo)
-( crontab -l 2>/dev/null | grep -v 'pm2 resurrect' ; echo "@reboot $(command -v pm2) resurrect >/dev/null 2>&1" ) | crontab -
+( crontab -l 2>/dev/null | grep -v 'pm2 resurrect' ; echo "@reboot PATH=$(dirname "$(command -v node)"):/usr/bin:/bin $(command -v pm2) resurrect >/dev/null 2>&1" ) | crontab - \
+  || echo "⚠ تعذر إضافة التشغيل التلقائي بعد الإقلاع؛ بعد أي إعادة تشغيل للخادم نفّذ: pm2 resurrect"
 
 say "5/5 فحص"
 sleep 5
