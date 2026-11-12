@@ -14,11 +14,12 @@ export function cleanDbUrl(raw: string | undefined, name = "DATABASE_URL"): DbUr
   const m = s.match(/^([a-z+]+):\/\/(.*)$/i);
   if (!m) {
     const start = s.slice(0, 12).replace(/[^\x20-\x7e]/g, "?");
-    return { ok: false, url: s, notes: [...notes, `${name} لا يبدأ بـ postgresql:// (يبدأ بـ «${start}…»). انسخ رابط Session pooler من زر Connect في Supabase.`], summary: start };
+    return { ok: false, url: s, notes: [...notes, `${name} لا يبدأ بـ mysql:// (يبدأ بـ «${start}…»). مثال: mysql://user:pass@127.0.0.1:3306/azdan_brokers`], summary: start };
   }
   let [, scheme, rest] = m;
-  if (!/^postgres(ql)?$/i.test(scheme)) return { ok: false, url: s, notes: [...notes, `${name} نوعه «${scheme}» وليس postgresql.`], summary: scheme };
-  if (scheme !== "postgresql") { scheme = "postgresql"; }
+  if (/^mysql$/i.test(scheme)) scheme = "mysql";
+  else if (/^postgres(ql)?$/i.test(scheme)) scheme = "postgresql";
+  else return { ok: false, url: s, notes: [...notes, `${name} نوعه «${scheme}» وليس mysql أو postgresql.`], summary: scheme };
   const at = rest.lastIndexOf("@");
   if (at < 0) return { ok: false, url: s, notes: [...notes, `${name} لا يحتوي اسم مستخدم وكلمة مرور.`], summary: "بلا بيانات دخول" };
   const creds = rest.slice(0, at);
@@ -35,5 +36,5 @@ export function cleanDbUrl(raw: string | undefined, name = "DATABASE_URL"): DbUr
   if (!pass) notes.push("تحذير: لا توجد كلمة مرور في الرابط.");
   const url = `${scheme}://${user}:${encoded}@${host}`;
   const hostOnly = host.split(/[/?]/)[0];
-  return { ok: true, url, notes, summary: `postgresql://${user}:•••@${hostOnly}` };
+  return { ok: true, url, notes, summary: `${scheme}://${user}:•••@${hostOnly}` };
 }

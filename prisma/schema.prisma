@@ -1,5 +1,5 @@
 // منصة وسطاء ازدان — مخطط قاعدة البيانات
-// PostgreSQL (مثل Supabase). DATABASE_URL للاتصال عبر المجمّع، وDIRECT_URL لتحديث المخطط.
+// MySQL 8 على خادم ازدان (Forge). DATABASE_URL رابط الاتصال.
 // الحقول النصية ذات القيم المحددة موثقة في src/lib/constants.ts
 
 generator client {
@@ -7,9 +7,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -45,7 +44,7 @@ model BrokerProfile {
   bankName       String?
   // DRAFT → SUBMITTED → (NEEDS_CHANGES ↺) → VERIFIED → (توقيع) ACTIVE ⇄ SUSPENDED
   status         String    @default("DRAFT")
-  reviewNote     String?
+  reviewNote     String? @db.Text
   submittedAt    DateTime?
   verifiedAt     DateTime?
   signedAt       DateTime?
@@ -78,15 +77,15 @@ model Project {
   district       String?
   type           String    // فلل | شقق | أدوار | تاون هاوس | أراضٍ
   status         String    @default("ACTIVE") // ACTIVE | SOON | SOLD_OUT | HIDDEN
-  description    String?
-  highlights     String?   // سطر لكل ميزة
+  description    String? @db.Text
+  highlights     String? @db.Text   // سطر لكل ميزة
   priceFrom      Int?
   commissionRate Float     // نسبة العمولة الأساسية %
   adLicense      String?   // رقم ترخيص الإعلان العقاري
   waflLicense    String?   // ترخيص البيع على الخارطة (وافي) إن وجد
   deliveryDate   String?
-  locationUrl    String?
-  brochureUrl    String?
+  locationUrl    String? @db.Text
+  brochureUrl    String? @db.Text
   isDemo         Boolean   @default(false)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -162,7 +161,7 @@ model LeadNote {
   authorId  String?
   author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
   kind      String   @default("NOTE") // NOTE | STAGE | SYSTEM
-  text      String
+  text      String @db.Text
   createdAt DateTime @default(now())
 
   @@index([leadId, createdAt])
@@ -187,7 +186,7 @@ model Deal {
   vat         Int       @default(0)
   // EXPECTED → APPROVED → PAID
   commissionStatus String @default("EXPECTED")
-  adminNote   String?
+  adminNote   String? @db.Text
   paymentRef  String?
   requestedAt DateTime  @default(now())
   reservedAt  DateTime?
@@ -216,7 +215,7 @@ model AuditLog {
   action    String
   entity    String
   entityId  String?
-  meta      String?
+  meta      String? @db.Text
   createdAt DateTime @default(now())
 
   @@index([entity, entityId])

@@ -17,9 +17,9 @@ async function main() {
 
   // توحيد كتابة الاسم: «ازدان» (تحديث البيانات المحفوظة سابقًا بالصيغة القديمة)
   const OLD = "\u0625\u0632\u062f\u0627\u0646"; // إزدان
-  await db.$executeRaw`UPDATE "Project" SET "name" = replace("name", ${OLD}, 'ازدان'), "description" = replace("description", ${OLD}, 'ازدان') WHERE "name" LIKE ${"%" + OLD + "%"} OR "description" LIKE ${"%" + OLD + "%"}`;
-  await db.$executeRaw`UPDATE "User" SET "name" = replace("name", ${OLD}, 'ازدان') WHERE "name" LIKE ${"%" + OLD + "%"}`;
-  await db.$executeRaw`UPDATE "LeadNote" SET "text" = replace("text", ${OLD}, 'ازدان') WHERE "text" LIKE ${"%" + OLD + "%"}`;
+  await db.$executeRaw`UPDATE \`Project\` SET \`name\` = replace(\`name\`, ${OLD}, 'ازدان'), \`description\` = replace(\`description\`, ${OLD}, 'ازدان') WHERE \`name\` LIKE ${"%" + OLD + "%"} OR \`description\` LIKE ${"%" + OLD + "%"}`;
+  await db.$executeRaw`UPDATE \`User\` SET \`name\` = replace(\`name\`, ${OLD}, 'ازدان') WHERE \`name\` LIKE ${"%" + OLD + "%"}`;
+  await db.$executeRaw`UPDATE \`LeadNote\` SET \`text\` = replace(\`text\`, ${OLD}, 'ازدان') WHERE \`text\` LIKE ${"%" + OLD + "%"}`;
 
   const phone = normalize(process.env.ADMIN_PHONE ?? "");
   const password = process.env.ADMIN_PASSWORD ?? "";
